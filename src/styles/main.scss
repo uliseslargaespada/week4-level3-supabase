@@ -1,0 +1,8 @@
+/**
+ * Root stylesheet for the Supabase Tasks app.
+ * Imports variables, layout and task-specific styles.
+ */
+
+@use "./variables";
+@use "./layout";
+@use "./tasks";
