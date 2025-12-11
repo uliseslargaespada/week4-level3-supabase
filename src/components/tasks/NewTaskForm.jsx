@@ -31,7 +31,7 @@ const NewTaskForm = ({ onAddTask }) => {
     setSubmitting(true);
 
     try {
-      await onAddTask();
+      await onAddTask(trimmed);
       setTitle('');
     } catch (formError) {
       console.log(formError);
@@ -40,7 +40,7 @@ const NewTaskForm = ({ onAddTask }) => {
       setTimeout(() => {
         setError("");
       }, 5000);
-      
+
     } finally {
       setSubmitting(false);
     }
