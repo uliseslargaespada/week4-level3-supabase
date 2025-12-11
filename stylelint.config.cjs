@@ -28,5 +28,8 @@ module.exports = {
     
     // Allow percentages to be decimal numbers rather than strings
     "alpha-value-notation": "number",
+
+    // Skip scss/no-global-function-names
+    "scss/no-global-function-names": null,
   }
 };
