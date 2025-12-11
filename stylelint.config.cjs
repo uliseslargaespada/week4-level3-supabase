@@ -20,6 +20,13 @@ module.exports = {
     // Allow camelCase class
     "selector-class-pattern": null,
 
-    "at-rule-no-unknown": [true, { ignoreAtRules: ["use", "forward", "mixin", "include", "function"] }]
+    "at-rule-no-unknown": [true, { ignoreAtRules: ["use", "forward", "mixin", "include", "function"] }],
+
+    // Allow rgba
+    "color-function-notation": "legacy",
+    // "color-function-alias-notation": "legacy",
+    
+    // Allow percentages to be decimal numbers rather than strings
+    "alpha-value-notation": "number",
   }
 };
