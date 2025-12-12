@@ -1,41 +1,26 @@
-import { supabase } from "../../lib/supabaseClient";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import TaskItem from "./TaskItem.jsx";
 import NewTaskForm from "./NewTaskForm.jsx";
-
+import { useTasks } from "../../hooks/useTasks.js";
 
 /**
- * TaskList is responsible for:
- *  - Fetching tasks from Supabase on mount.
- *  - Managing loading and error state for the list.
- *  - Rendering a list of TaskItem components.
+ * TaskList (Day 4):
+ *  - Uses the custom useTasks hook for all Supabase interactions.
+ *  - Manages filter state (All / Active / Completed).
+ *  - Delegates add / toggle / delete actions to the hook.
+ *  - Displays loading, error and summary information.
  */
 function TaskList() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all"); // "all" | "active" | "completed"
 
-  /**
-   * Loads tasks from the Supabase "tasks" table.
-   */
-  const loadTasks = async () => {
-    // Set loading and errors
-    setLoading(true);
-    setError(null);
-
-    const { data, error: queryError } = await supabase
-      .from('tasks')
-      .select('*')
-      .order("created_at", { ascending: false });
-
-    if (queryError) {
-      setError('Error loading tasks: ' + queryError.message);
-    } else {
-      setTasks(data);
-    }
-    setLoading(false);
-  };
+  const { 
+    tasks,
+    loading,
+    error,
+    addTask,
+    toggleTask,
+    deleteTask
+  } = useTasks();
 
   /**
    * Adds a new task by inserting it into Supabase and updating local state.
@@ -43,21 +28,7 @@ function TaskList() {
    * @param {string} title - Title of the new task.
    */
   const handleAddTask = async (title) => {
-    const { data, error } = await supabase
-      .from("tasks")
-      .insert([{ title }])
-      .select();
-
-    if (error) {
-      // Re-throw so NewTaskForm can display the error.
-      throw error;
-    }
-
-    const insertedTask = data?.[0];
-    if (insertedTask) {
-      // Prepend the new task to the existing list.
-      setTasks((prev) => [insertedTask, ...prev]);
-    }
+    addTask(title);
   };
 
   /**
@@ -67,22 +38,7 @@ function TaskList() {
    * @param {boolean} isComplete - Desired completion state.
    */
   const handleToggleComplete = async (id, isComplete) => {
-    const { error } = await supabase
-      .from("tasks")
-      .update({ is_complete: isComplete })
-      .eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert("Failed to update task.");
-      return;
-    }
-
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, is_complete: isComplete } : task
-      )
-    );
+    toggleTask(id, isComplete);
   };
 
   /**
@@ -91,38 +47,21 @@ function TaskList() {
    * @param {number} id - Task ID.
    */
   const handleDeleteTask = async (id) => {
-    const confirmDelete = window.confirm("Delete this task?");
-    if (!confirmDelete) return;
-
-    const { error } = await supabase.from("tasks").delete().eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert("Failed to delete task.");
-      return;
-    }
-
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    deleteTask(id);
   };
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      await loadTasks();
-    };
-    
-    fetchTasks();
-  }, []);
-
   // Derived summary information based on current tasks.
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.is_complete).length;
+  // useMemo is for values
+  // useCallback is for functions
+  const totalTasks = useMemo(() => tasks.length, [tasks]);
+  const completedTasks = useMemo(() => tasks.filter((task) => task.is_complete).length, [tasks]);
 
   // Derived filtered list based on current filter state.
-  const visibleTasks = tasks.filter((task) => {
+  const visibleTasks = useMemo(() => tasks.filter((task) => {
     if (filter === "active") return !task.is_complete;
     if (filter === "completed") return task.is_complete;
     return true;
-  });
+  }), [tasks, filter]);
 
   return (
     <section className="card">
@@ -191,5 +130,3 @@ function TaskList() {
 };
 
 export default TaskList;
-
-// CRUD - Create, Read, Update and Delete
