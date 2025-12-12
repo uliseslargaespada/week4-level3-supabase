@@ -22,7 +22,6 @@ body {
   background:
     radial-gradient(circle at top, #111827 0, $color-bg 50%),
     linear-gradient(180deg, #020617 0%, #020617 100%);
-  color: $color-text-main;
 }
 
 /**
@@ -78,6 +77,7 @@ body {
   box-shadow: $shadow-soft;
   padding: $space-lg;
   border: 1px solid $color-border-soft;
+  color: #fff;
 }
 
 /**
