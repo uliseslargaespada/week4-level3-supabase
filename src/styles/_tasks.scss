@@ -55,7 +55,7 @@
     box-shadow: 0 8px 20px rgb(34, 197, 94, 0.35);
 
     &:hover {
-      background-color: color.adjust($color-accent, $lightness: 10%);
+      background-color: lighten($color-accent, 3%);
       transform: translateY(-1px);
     }
 
