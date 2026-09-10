@@ -11,7 +11,7 @@ import { useTasks } from "../../hooks/useTasks.js";
  *  - Delegates add / toggle / delete actions to the hook.
  *  - Displays loading, error and summary information.
  */
-function TaskList() {
+function TaskList({ userId }) {
   const [filter, setFilter] = useState("all"); // "all" | "active" | "completed"
 
   const { 
@@ -21,7 +21,7 @@ function TaskList() {
     addTask,
     toggleTask,
     deleteTask
-  } = useTasks();
+  } = useTasks(userId);
 
   /**
    * Adds a new task by inserting it into Supabase and updating local state.
