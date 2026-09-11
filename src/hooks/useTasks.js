@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-function useTasks() {
+function useTasks(userId) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +25,7 @@ function useTasks() {
     const { data, error: queryError } = await supabase
       .from('tasks')
       .select('*')
+      .eq('user_id', userId)
       .order("created_at", { ascending: false });
 
     if (queryError) {
@@ -33,7 +34,7 @@ function useTasks() {
       setTasks(data);
     }
     setLoading(false);
-  }, []);
+  }, [userId]);
 
     /**
    * Adds a new task by inserting it into Supabase and updating local state.
@@ -43,7 +44,7 @@ function useTasks() {
   const addTask = useCallback(async (title) => {
     const { data, error: insertError } = await supabase
       .from("tasks")
-      .insert([{ title, is_complete: false }])
+      .insert([{ title, is_complete: false, user_id: userId }])
       .select();
 
     if (insertError) {
@@ -56,7 +57,7 @@ function useTasks() {
     if (inserted) {
       setTasks((prev) => [inserted, ...prev]);
     }
-  }, []);
+  }, [userId]);
 
   /** 
    * Toggles the is_complete flag of a task in Supabase and local state.
