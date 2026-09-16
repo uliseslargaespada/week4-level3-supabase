@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-import TaskItem from "./TaskItem.jsx";
-import NewTaskForm from "./NewTaskForm.jsx";
-import { useTasks } from "../../hooks/useTasks.js";
+import TaskItem from './TaskItem.jsx';
+import NewTaskForm from './NewTaskForm.jsx';
+import { useTasks } from '../../hooks/useTasks.js';
 
 /**
  * TaskList (Day 4):
@@ -12,7 +12,8 @@ import { useTasks } from "../../hooks/useTasks.js";
  *  - Displays loading, error and summary information.
  */
 function TaskList({ userId }) {
-  const [filter, setFilter] = useState("all"); // "all" | "active" | "completed"
+  const [filter, setFilter] = useState('all');
+  const [actionError, setActionError] = useState('');
 
   const { 
     tasks,
@@ -29,7 +30,8 @@ function TaskList({ userId }) {
    * @param {string} title - Title of the new task.
    */
   const handleAddTask = async (title) => {
-    addTask(title);
+    setActionError('');
+    await addTask(title);
   };
 
   /**
@@ -39,7 +41,13 @@ function TaskList({ userId }) {
    * @param {boolean} isComplete - Desired completion state.
    */
   const handleToggleComplete = async (id, isComplete) => {
-    toggleTask(id, isComplete);
+    setActionError('');
+
+    try {
+      await toggleTask(id, isComplete);
+    } catch (taskError) {
+      setActionError(`Could not update the task: ${taskError.message}`);
+    }
   };
 
   /**
@@ -48,75 +56,90 @@ function TaskList({ userId }) {
    * @param {number} id - Task ID.
    */
   const handleDeleteTask = async (id) => {
-    deleteTask(id);
+    setActionError('');
+
+    try {
+      await deleteTask(id);
+    } catch (taskError) {
+      setActionError(`Could not delete the task: ${taskError.message}`);
+    }
   };
 
   // Derived summary information based on current tasks.
   // useMemo is for values
   // useCallback is for functions
-  const totalTasks = useMemo(() => tasks.length, [tasks]);
-  const completedTasks = useMemo(() => tasks.filter((task) => task.is_complete).length, [tasks]);
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(
+    (task) => task.is_complete,
+  ).length;
 
   // Derived filtered list based on current filter state.
-  const visibleTasks = useMemo(() => tasks.filter((task) => {
-    if (filter === "active") return !task.is_complete;
-    if (filter === "completed") return task.is_complete;
-    return true;
-  }), [tasks, filter]);
+  const visibleTasks = useMemo(
+    () =>
+      tasks.filter((task) => {
+        if (filter === 'active') return !task.is_complete;
+        if (filter === 'completed') return task.is_complete;
+        return true;
+      }),
+    [tasks, filter],
+  );
 
   return (
-    <section className="card">
-      <h2 className="color-white">Tasks</h2>
+    <section className="card task-panel">
+      <div className="task-panel__heading">
+        <div>
+          <p className="eyebrow">Task list</p>
+          <h2>Today’s focus</h2>
+        </div>
+
+        {totalTasks > 0 && (
+          <p className="task-summary" aria-live="polite">
+            <strong>{completedTasks}</strong> of{' '}
+            <strong>{totalTasks}</strong> complete
+          </p>
+        )}
+      </div>
 
       <NewTaskForm onAddTask={handleAddTask} />
 
-      {/* Filter controls */}
-      <div style={{ marginBottom: "0.75rem", fontSize: "0.9rem" }}>
-        <span style={{ marginRight: "0.5rem" }}>Filter:</span>
-        <button
-          type="button"
-          onClick={() => setFilter("all")}
-          style={{
-            marginRight: "0.25rem",
-            fontWeight: filter === "all" ? "600" : "400"
-          }}
-        >
-          All
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilter("active")}
-          style={{
-            marginRight: "0.25rem",
-            fontWeight: filter === "active" ? "600" : "400"
-          }}
-        >
-          Active
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilter("completed")}
-          style={{
-            fontWeight: filter === "completed" ? "600" : "400"
-          }}
-        >
-          Completed
-        </button>
+      <div className="task-filter" aria-label="Filter tasks">
+        {['all', 'active', 'completed'].map((filterName) => (
+          <button
+            key={filterName}
+            type="button"
+            className={
+              filter === filterName
+                ? 'task-filter__button task-filter__button--active'
+                : 'task-filter__button'
+            }
+            onClick={() => setFilter(filterName)}
+            aria-pressed={filter === filterName}
+          >
+            {filterName}
+          </button>
+        ))}
       </div>
 
-      {error && <p className="error-text">{error}</p>}
-
-      {!loading && !error && tasks.length === 0 && <p>No tasks yet.</p>}
-
-      {totalTasks > 0 && (
-        <p className="task-summary">
-          <strong>{totalTasks}</strong> tasks ·{" "}
-          <strong>{completedTasks}</strong> completed
+      {(error || actionError) && (
+        <p className="error-text" role="alert">
+          {error || actionError}
         </p>
+      )}
+
+      {!loading && !error && tasks.length === 0 && (
+        <div className="empty-state">
+          <div>
+            <strong>No tasks yet</strong>
+            <p>Add your first task above to get started.</p>
+          </div>
+        </div>
       )}
       
       {loading ? (
-        <Spinner animation="border" />
+        <div className="loading-state" aria-live="polite">
+          <Spinner animation="border" size="sm" />
+          <span>Loading your tasks…</span>
+        </div>
       ) : (
         <ul className="task-list">
           {visibleTasks.map((task) => (
@@ -131,6 +154,6 @@ function TaskList({ userId }) {
       )}
     </section>
   );
-};
+}
 
 export default TaskList;

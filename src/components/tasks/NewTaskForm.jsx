@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 /**
  * NewTaskForm lets the user add a new task.
@@ -8,7 +8,7 @@ import { useState } from "react";
  *        Callback invoked when the form is submitted with a non-empty title.
  */
 const NewTaskForm = ({ onAddTask }) => {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,12 +18,12 @@ const NewTaskForm = ({ onAddTask }) => {
     const trimmed = title.trim();
 
     if (!trimmed) {
-      setError("Task title cannot be empty.");
+      setError('Task title cannot be empty.');
       return;
     }
 
     if (trimmed.length > 80) {
-      setError("Task title cannot exceed 80 characters.");
+      setError('Task title cannot exceed 80 characters.');
       return;
     }
 
@@ -34,13 +34,7 @@ const NewTaskForm = ({ onAddTask }) => {
       await onAddTask(trimmed);
       setTitle('');
     } catch (formError) {
-      console.log(formError);
-      setError("Failed to add a task. Error message: " + formError?.message);
-
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-
+      setError(`Could not add the task: ${formError.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -59,13 +53,18 @@ const NewTaskForm = ({ onAddTask }) => {
         value={title}
         onChange={(event) => setTitle(event.target.value)}
         disabled={submitting}
+        maxLength={80}
       />
 
       <button type="submit" disabled={submitting || !title.trim()}>
-        {submitting ? "Adding…" : "Add"}
+        {submitting ? 'Adding…' : 'Add task'}
       </button>
 
-      {error && <p className="error-text">{error}</p>}
+      {error && (
+        <p className="error-text new-task-form__error" role="alert">
+          {error}
+        </p>
+      )}
     </form>
   );
 };

@@ -11,10 +11,11 @@ import { createClient } from '@supabase/supabase-js';
 // Read values from environment variables.
 // In Vite, only variables prefixed with "VITE_" are exposed to the client.
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const supabasePublishableKey =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 // Basic safety check – helps catch misconfigured env vars during development.
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!supabaseUrl || !supabasePublishableKey) {
   console.error(
     "Missing Supabase configuration. Check VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY."
   );
@@ -22,6 +23,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 /**
  * Single Supabase client instance used by the React app.
- * The anon key is public and used from the browser, protected by RLS policies.:contentReference[oaicite:15]{index=15}
+ * The publishable key is safe to use in the browser. Row Level Security
+ * policies protect the data returned through this client.
  */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(
+  supabaseUrl,
+  supabasePublishableKey,
+);

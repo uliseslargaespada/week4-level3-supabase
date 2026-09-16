@@ -5,8 +5,11 @@ alter table public.tasks
   on delete cascade;
 
 alter table public.tasks
-  alter column user_id set default auth.uid(),
-  alter column user_id set not null;
+  alter column user_id set default auth.uid();
+
+-- Existing rows may have a NULL user_id because they were created before
+-- authentication was added. RLS keeps those rows hidden. After assigning or
+-- deleting them, you may optionally make user_id NOT NULL in a later migration.
 
 -- Improves queries and policies that filter by task owner.
 create index if not exists tasks_user_id_idx
@@ -25,6 +28,19 @@ revoke all privileges
 grant select, insert, update, delete
   on table public.tasks
   to authenticated;
+
+-- Dropping first makes this teaching migration safe to rerun.
+drop policy if exists "Users can read their own tasks"
+  on public.tasks;
+
+drop policy if exists "Users can create their own tasks"
+  on public.tasks;
+
+drop policy if exists "Users can update their own tasks"
+  on public.tasks;
+
+drop policy if exists "Users can delete their own tasks"
+  on public.tasks;
 
 create policy "Users can read their own tasks"
   on public.tasks

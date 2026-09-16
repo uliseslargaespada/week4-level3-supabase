@@ -1,7 +1,3 @@
-/**
- * Global layout styles: body, shell, header, footer, card, utilities.
- */
-
 @use "./variables" as *;
 
 *,
@@ -10,96 +6,218 @@
   box-sizing: border-box;
 }
 
-html,
+html {
+  min-width: 320px;
+  min-height: 100%;
+  color-scheme: dark;
+}
+
+body,
+#root {
+  min-height: 100vh;
+}
+
 body {
   margin: 0;
-  padding: 0;
-  min-height: 100%;
-}
-
-body {
-  font-family: $font-main;
   background:
-    radial-gradient(circle at top, #111827 0, $color-bg 50%),
-    linear-gradient(180deg, #020617 0%, #020617 100%);
+    radial-gradient(circle at 15% 0%, rgb(34, 197, 94, 0.12), transparent 34rem),
+    radial-gradient(circle at 100% 28%, rgb(59, 130, 246, 0.08), transparent 30rem),
+    $color-bg;
+  color: $color-text-main;
+  font-family: $font-main;
+  -webkit-font-smoothing: antialiased;
 }
 
-/**
- * Root app shell: centers content and controls width.
- */
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background-color: $color-accent;
+  color: #052e16;
+}
+
 .app-shell {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: $space-xl;
+  width: min(100% - 2rem, 960px);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  padding: $space-xl 0;
 }
 
-/**
- * Header: title and subtitle.
- */
+.app-main {
+  width: 100%;
+  flex: 1;
+}
+
 .app-header {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-lg;
   margin-bottom: $space-xl;
+  padding-bottom: $space-md;
+  border-bottom: 1px solid $color-border-soft;
 
-  &__title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    margin: 0 0 $space-xs;
+  &__identity {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
   }
 
-  &__subtitle {
-    margin: 0;
+  &__brand {
+    width: fit-content;
+    border-radius: $radius-sm;
+    color: $color-text-main;
+    font-size: 1.5rem;
+    font-weight: 750;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 4px;
+    }
+  }
+
+  &__user {
+    max-width: 260px;
+    overflow: hidden;
     color: $color-text-muted;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__error {
+    position: absolute;
+    top: calc(100% + $space-xs);
+    right: 0;
+    margin: 0;
+    color: $color-danger;
+    font-size: 0.8rem;
   }
 }
 
-/**
- * Footer: small, muted, centered text.
- */
 .app-footer {
-  margin-top: $space-xl;
+  margin-top: 3rem;
   padding-top: $space-md;
   border-top: 1px solid $color-border-soft;
-  text-align: center;
-  font-size: 0.85rem;
   color: $color-text-muted;
+  font-size: 0.8rem;
+  text-align: center;
+
+  p {
+    margin: 0;
+  }
 }
 
-/**
- * Generic content card.
- */
 .card {
-  background: $color-surface;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-soft;
-  padding: $space-lg;
+  padding: clamp($space-lg, 4vw, $space-xl);
   border: 1px solid $color-border-soft;
-  color: #fff;
+  border-radius: $radius-lg;
+  background:
+    linear-gradient(145deg, rgb(15, 23, 42, 0.96), rgb(7, 13, 25, 0.98));
+  color: $color-text-main;
+  box-shadow: $shadow-soft;
 }
 
-/**
- * Simple error text.
- */
+.eyebrow {
+  margin: 0 0 $space-sm;
+  color: $color-accent;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
 .error-text {
-  color: $color-danger;
+  margin: $space-md 0 0;
+  padding: $space-sm $space-md;
+  border: 1px solid rgb(249, 115, 115, 0.35);
+  border-radius: $radius-md;
+  background-color: $color-danger-soft;
+  color: #fecaca;
   font-size: 0.85rem;
-  margin-top: $space-xs;
 }
 
-/**
- * Screen-reader-only text utility.
- */
 .sr-only {
-  position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
+  position: absolute;
   margin: -1px;
+  padding: 0;
   overflow: hidden;
-  clip-path: rect(0, 0, 0, 0);
-  white-space: nowrap;
   border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.session-loading {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: $space-md;
+  background-color: $color-bg;
+  color: $color-text-muted;
+
+  p {
+    margin: 0;
+  }
+
+  &__spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid $color-border-soft;
+    border-top-color: $color-accent;
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .app-shell {
+    width: min(100% - 1.25rem, 960px);
+    padding: $space-lg 0;
+  }
+
+  .app-header {
+    align-items: stretch;
+    flex-direction: column;
+
+    &__user {
+      max-width: 100%;
+    }
+
+    &__error {
+      position: static;
+    }
+  }
 }

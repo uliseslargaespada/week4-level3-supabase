@@ -1,0 +1,83 @@
+@use "./variables" as *;
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $space-xs;
+  flex-wrap: wrap;
+
+  &__link,
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: $space-sm $space-md;
+    border-radius: $radius-md;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      color $transition-fast,
+      background-color $transition-fast,
+      border-color $transition-fast;
+  }
+
+  &__link {
+    border: 1px solid transparent;
+    color: $color-text-muted;
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 2px;
+    }
+
+    &:hover {
+      color: $color-text-main;
+      background-color: rgb(148, 163, 184, 0.08);
+    }
+
+    &.active {
+      color: $color-accent;
+      border-color: $color-border-soft;
+      background-color: $color-accent-soft;
+    }
+  }
+
+  &__button {
+    border: 1px solid $color-border-soft;
+    background: transparent;
+    color: $color-text-main;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: $color-danger;
+      background-color: $color-danger-soft;
+      color: #fecaca;
+    }
+  }
+
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .main-nav {
+    justify-content: flex-start;
+
+    &__link,
+    &__button {
+      flex: 1;
+    }
+  }
+}
