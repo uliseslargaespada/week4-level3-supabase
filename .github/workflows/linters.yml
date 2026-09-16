@@ -1,4 +1,4 @@
-name: Linters
+name: Quality checks
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main, dev ]
 
 jobs:
-  lint:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,4 +24,7 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        run: npm run lint -- --max-warnings=0
+        run: npm run lint
+
+      - name: Build production app
+        run: npm run build

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient.js';
 
 function useAuth() {
   const [session, setSession] = useState(null);
@@ -39,10 +39,15 @@ function useAuth() {
     };
   }, []);
 
-  const signUp = async (email, password) => {
+  const signUp = async (displayName, email, password) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          display_name: displayName,
+        },
+      },
     });
 
     if (error) throw error;
