@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage.jsx';
 import TasksPage from './pages/TasksPage.jsx';
 import TaskDetailsPage from './pages/TaskDetailsPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
+import EditTaskPage from './pages/EditTaskPage.jsx';
 import { useAuth } from './hooks/useAuth.js';
 
 function App() {
@@ -59,6 +60,10 @@ function App() {
           <Route
             path="tasks/:taskId"
             element={<TaskDetailsPage userId={user?.id} />}
+          />
+          <Route
+            path="tasks/:taskId/edit"
+            element={<EditTaskPage userId={user?.id} />}
           />
         </Route>
 
