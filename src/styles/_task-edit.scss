@@ -1,0 +1,206 @@
+@use "./variables" as *;
+
+.task-edit-card {
+  width: min(100%, 720px);
+}
+
+.task-edit-form {
+  display: grid;
+  gap: $space-lg;
+
+  &__fields {
+    min-width: 0;
+    display: grid;
+    gap: $space-xl;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__field {
+    display: grid;
+    gap: $space-sm;
+
+    label {
+      color: $color-text-main;
+      font-size: 0.95rem;
+      font-weight: 650;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      min-height: 48px;
+      padding: $space-sm $space-md;
+      border: 1px solid $color-border-soft;
+      border-radius: $radius-md;
+      background-color: $color-surface-soft;
+      color: $color-text-main;
+      transition:
+        border-color $transition-fast,
+        box-shadow $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $color-accent;
+        box-shadow: 0 0 0 3px $color-focus;
+      }
+
+      &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+
+      &[aria-invalid="true"] {
+        border-color: $color-danger;
+      }
+    }
+
+    .error-text {
+      margin: 0;
+    }
+  }
+
+  &__help {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-md;
+    color: $color-text-muted;
+    font-size: 0.8rem;
+
+    span:last-child {
+      white-space: nowrap;
+    }
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    color: $color-text-main;
+    font-size: 0.95rem;
+
+    input {
+      width: 1.1rem;
+      height: 1.1rem;
+      flex: none;
+      accent-color: $color-accent;
+
+      &:focus-visible {
+        outline: 3px solid $color-focus;
+        outline-offset: 3px;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-sm;
+    padding-top: $space-lg;
+    border-top: 1px solid $color-border-soft;
+  }
+
+  &__cancel,
+  &__save {
+    min-height: 44px;
+    padding: $space-sm $space-lg;
+    border: 1px solid transparent;
+    border-radius: $radius-md;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background-color $transition-fast,
+      border-color $transition-fast;
+  }
+
+  &__save {
+    background-color: $color-accent;
+    color: #052e16;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 3px;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: $color-accent-hover;
+    }
+  }
+
+  &__cancel {
+    border-color: $color-border-soft;
+    background: transparent;
+    color: $color-text-main;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 3px;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgb(148, 163, 184, 0.1);
+    }
+  }
+}
+
+.task-details-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $space-lg;
+}
+
+.task-edit-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: $space-sm $space-lg;
+  border-radius: $radius-md;
+  background-color: $color-accent;
+  color: #052e16;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $color-accent-hover;
+    color: #052e16;
+  }
+
+  &:focus-visible {
+    outline: 3px solid $color-focus;
+    outline-offset: 3px;
+  }
+}
+
+.task-edit-notice {
+  margin: 0 0 $space-xl;
+  padding: $space-sm $space-md;
+  border: 1px solid rgb(34, 197, 94, 0.35);
+  border-radius: $radius-md;
+  background-color: $color-success-soft;
+  color: $color-success;
+  font-size: 0.9rem;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .task-edit-form__actions {
+    flex-direction: column;
+  }
+
+  .task-edit-form__save,
+  .task-edit-form__cancel {
+    width: 100%;
+  }
+}
