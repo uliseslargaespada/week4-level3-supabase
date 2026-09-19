@@ -112,21 +112,21 @@
     transition:
       background-color $transition-fast,
       border-color $transition-fast;
-
-    &:focus-visible {
-      outline: 3px solid $color-focus;
-      outline-offset: 3px;
-    }
-
-    &:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
   }
 
   &__save {
     background-color: $color-accent;
     color: #052e16;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 3px;
+    }
 
     &:hover:not(:disabled) {
       background-color: $color-accent-hover;
@@ -137,6 +137,16 @@
     border-color: $color-border-soft;
     background: transparent;
     color: $color-text-main;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $color-focus;
+      outline-offset: 3px;
+    }
 
     &:hover:not(:disabled) {
       background-color: rgb(148, 163, 184, 0.1);
